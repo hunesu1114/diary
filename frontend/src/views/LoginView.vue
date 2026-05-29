@@ -1,11 +1,22 @@
 <script setup lang="ts">
+import { useRouter } from 'vue-router'
 import ThemeToggle from '../components/ThemeToggle.vue'
+import { useAuthStore } from '../stores/auth'
+
+const router = useRouter()
+const auth = useAuthStore()
 
 // 브라우저가 직접 도달하는 백엔드 origin (compose/dev 모두 localhost:8081 노출)
 const backendOrigin =
   import.meta.env.VITE_BACKEND_ORIGIN ?? 'http://localhost:8081'
 
 function loginWithKakao() {
+  // mock 모드: Kakao 없이 즉시 로그인해 화면 미리보기
+  if (auth.isMock) {
+    auth.mockLogin()
+    router.push({ name: 'list' })
+    return
+  }
   window.location.href = `${backendOrigin}/oauth2/authorization/kakao`
 }
 </script>
@@ -23,10 +34,13 @@ function loginWithKakao() {
 
         <button class="btn kakao" @click="loginWithKakao">
           <span class="kakao-icon">💬</span>
-          카카오로 시작하기
+          {{ auth.isMock ? '미리보기로 들어가기' : '카카오로 시작하기' }}
         </button>
 
-        <p class="muted small">로그인하면 24시간 동안 세션이 유지됩니다.</p>
+        <p v-if="auth.isMock" class="muted small">
+          미리보기 모드 · 로그인 없이 둘러봅니다 (잠금 PIN: 0000)
+        </p>
+        <p v-else class="muted small">로그인하면 24시간 동안 세션이 유지됩니다.</p>
       </div>
     </div>
   </div>

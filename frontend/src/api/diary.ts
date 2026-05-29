@@ -1,4 +1,5 @@
 import client from './client'
+import { mockDiaryApi } from './mock'
 
 export interface Diary {
   id: number
@@ -25,7 +26,7 @@ export interface Me {
   hasPin: boolean
 }
 
-export const diaryApi = {
+const realDiaryApi = {
   me: () => client.get<Me>('/me').then((r) => r.data),
   setPin: (pin: string) => client.post('/me/pin', { pin }),
 
@@ -43,3 +44,8 @@ export const diaryApi = {
       .post<Diary>(`/diaries/${id}/unlock`, { pin, removeLock })
       .then((r) => r.data),
 }
+
+export const isMock = import.meta.env.VITE_MOCK === 'true'
+
+// mock 모드면 인메모리 구현, 아니면 실제 백엔드 호출
+export const diaryApi = isMock ? mockDiaryApi : realDiaryApi
