@@ -1,0 +1,29 @@
+# env / secrets
+.env
+*.local
+
+# node
+node_modules/
+frontend/dist/
+frontend/.vite/
+
+# composite tsconfig 빌드 부산물
+*.tsbuildinfo
+frontend/vite.config.js
+frontend/vite.config.d.ts
+
+# java / gradle
+backend/.gradle/
+backend/build/
+backend/bin/
+*.class
+
+# IDE
+.idea/
+.vscode/
+*.iml
+
+# logs / os
+*.log
+.DS_Store
+Thumbs.db
